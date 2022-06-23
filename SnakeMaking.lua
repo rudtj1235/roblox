@@ -1,6 +1,5 @@
 local playerService = game:GetService("Players")
 local runService = game:GetService("RunService")
-
 local characterData = {}
 local folder = nil
 
@@ -20,7 +19,6 @@ local CreateFood = function()
 	local food = game.ServerStorage.Apple:Clone()
 	food.Position = Vector3.new(math.random(-50, 50),2,math.random(-50, 50))
 	food.Parent = folder
-
 end
 
 local Heartbeat = function(deltaTime)
@@ -39,15 +37,13 @@ local CharacterAdd = function(character)
 	data.parts = {}
 	data.position = character.PrimaryPart.Position
 	characterData[character] = data
-	CreatePart(character)
-	CreatePart(character)
-	CreatePart(character)
-	CreatePart(character)
-	CreatePart(character)
-	CreatePart(character)
-	CreatePart(character)
-	CreatePart(character)
-end
+	local Touched = function(otherPart)
+		if otherPart.Parent ~= folder then return end
+		otherPart.Position = Vector3.new(math.random(-50, 50), 2, math.random(-50, 50))
+		CreatePart(character)
+	end
+	character.PrimaryPart.Touched:Connect(Touched)
+	end
 
 local CharacterRemoving = function(character)
 	local data = characterData[character]
@@ -66,10 +62,7 @@ end
 folder = Instance.new("Folder")
 folder.Name = "Food"
 folder.Parent = workspace
+for i = 1, 20 do CreateFood() end
 
 playerService.PlayerAdded:Connect(PlayerAdded)
 runService.Heartbeat:Connect(Heartbeat)
-
-for i = 1, 20 do
-	CreateFood()
-end
